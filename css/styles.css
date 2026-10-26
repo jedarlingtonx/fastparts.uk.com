@@ -196,3 +196,7 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
   .car-arrow{width:36px;height:36px;font-size:24px;padding:0 0 3px}
   .car-prev{left:0}.car-next{right:0}
 }
+
+/* alternating section bands */
+.sec .block{padding-top:56px;padding-bottom:56px}
+.sec-b{background:#E3EAF6;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
