@@ -1,0 +1,15 @@
+# Fast Parts website (Pixel North build)
+
+Static HTML/CSS/JS, no build step. Hosted on GitHub Pages.
+
+## Before launch
+1. Fill every highlighted `[placeholder]` (search the HTML for `class="todo"`): company name, number, registered office, VAT, privacy email, response time, credit terms, 1989 heritage, reviewer permission.
+2. Forms: paste a form-service endpoint into `data-endpoint=""` on both forms (parts enquiry on index.html and retail.html, trade credit on trade.html). Until then forms tell visitors to ring.
+3. Indexing: the site is currently `noindex` with `Disallow: /` in robots.txt. At launch remove the robots meta tag from each page and replace robots.txt with `User-agent: *` / `Allow: /` / `Sitemap: https://www.fastparts.uk.com/sitemap.xml`.
+4. Replace the recreated logo with Paul's original vector artwork if he has it, and the FP favicon once approved.
+5. Domain: point www.fastparts.uk.com at GitHub Pages (CNAME), fix the bare-domain redirect, then enforce HTTPS.
+
+Publish changes: `git add .`, `git commit -m "message"`, `git push`.
+
+## Cookies and analytics (dormant)
+The site sets no cookies. `cookies.html`, the footer "Cookie settings" link and `js/consent.js` are in place so analytics can be added later. To switch on: set `ANALYTICS_ID` in `js/consent.js`, update `cookies.html` and `privacy.html`, and set GA retention to 14 months with Google signals off. The banner has equal Accept and Reject and loads nothing before consent.
