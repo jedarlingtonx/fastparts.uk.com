@@ -119,7 +119,7 @@ textarea{padding:10px 12px}
 .band .wrap{padding-top:56px;padding-bottom:56px}
 .band h2{color:#fff}
 .band .actions{gap:12px;margin:24px auto 0}
-footer.site{background:var(--foot);border-top:1px solid var(--line);margin-top:48px}
+footer.site{background:#fff;border-top:1px solid var(--line);margin-top:0}
 footer.site .cols{display:flex;flex-wrap:wrap;gap:32px 48px;padding-top:48px;padding-bottom:24px;font-size:16px}
 footer.site .cols>div{flex:1 1 200px;min-width:0}
 footer.site h3{font-size:18px}
