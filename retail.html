@@ -28,13 +28,15 @@
 <div class="util"><div class="wrap"><p>Mon to Fri 08:30 to 17:30 · Sat 09:00 to 12:00 · Closed Sundays and bank holidays</p><p>Family-run motor factors in Northwich and Winsford</p></div></div>
 <header class="site-header">
 <div class="wrap head-top">
+<div class="brand">
 <a class="logo" href="index.html" aria-label="Fast Parts home"><img src="images/fast-parts-logo.svg" alt="Fast Parts" width="420" height="106"></a>
+<nav class="main" aria-label="Main"><a href="index.html">Home</a><a href="trade.html">Trade</a><a href="retail.html" aria-current="page">Retail</a><a href="find-us.html">Find us</a><a href="about.html">About</a></nav>
+</div>
 <div class="call-row">
 <a class="call" href="tel:01606330555"><b>Call Northwich</b><span>01606 330 555</span></a>
 <a class="call" href="tel:01606552385"><b>Call Winsford</b><span>01606 552 385</span></a>
 </div>
 </div>
-<nav class="main wrap" aria-label="Main"><a href="index.html">Home</a><a href="trade.html">Trade</a><a href="retail.html" aria-current="page">Retail</a><a href="find-us.html">Find us</a><a href="about.html">About</a></nav>
 </header>
 <main id="main">
 <section class="hero"><div class="wrap">
@@ -43,9 +45,9 @@
 <h1>Everyone's welcome.</h1>
 <p class="lead">Tell us your make and model and we'll find the right part. There's no such thing as a stupid question.</p>
 <div class="actions"><a class="call light" href="tel:01606330555"><b>Call Northwich</b><span>01606 330 555</span></a>
-<a class="call light" href="tel:01606552385"><b>Call Winsford</b><span>01606 552 385</span></a></div><a class="text-link" href="#enquiry">Send a parts enquiry</a>
+<a class="call light" href="tel:01606552385"><b>Call Winsford</b><span>01606 552 385</span></a></div><a class="btn" href="#enquiry">Send a Parts Enquiry</a>
 </div>
-<div class="pic"><img src="images/fast-parts-team-counter.jpg" alt="Two Fast Parts team members smiling at the shop counter" style="object-position:center 25%"></div>
+<div class="pic"><img src="images/fast-parts-shop-interior.jpg" alt="Inside a Fast Parts shop, with shelves of oils, brake parts and accessories" style="object-position:center center"></div>
 </div></section>
 <section class="block wrap"><h2 style="margin-bottom:28px">What you'll find</h2><div class="cards">
 <div class="card"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4zM3 8v8l9 4 9-4V8M12 12v8"/></svg><h3>Parts for most cars and vans</h3><p>Aftermarket parts across most makes and models, new and reconditioned.</p></div>
@@ -63,16 +65,20 @@
 <h2>Send a parts enquiry</h2>
 <p>Tell us what you're after and which shop suits you. We'll get back to you <span class="todo">[response time to confirm]</span>.</p>
 <p>Prefer to talk? Call Northwich on <a href="tel:01606330555"><b>01606 330 555</b></a> or Winsford on <a href="tel:01606552385"><b>01606 552 385</b></a>.</p>
-<img src="images/fast-parts-shop-interior.jpg" alt="Inside a Fast Parts shop, with shelves of oils, brake parts and accessories" width="516" height="387" loading="lazy">
+<img src="images/fast-parts-team-counter.jpg" alt="Two Fast Parts team members smiling at the shop counter" width="554" height="554" loading="lazy">
 </div>
 <form data-form="parts-enquiry" data-endpoint="" novalidate>
-<div class="row"><div><label for="name">Name *</label><input id="name" name="name" type="text" autocomplete="name" required></div>
-<div><label for="phone">Phone *</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div></div>
-<div><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email"></div>
-<div class="row"><div><label for="vehicle">Vehicle make and model *</label><input id="vehicle" name="vehicle" type="text" required></div>
-<div><label for="reg">Registration (optional)</label><input id="reg" name="registration" type="text"></div></div>
-<div><label for="part">The part you need *</label><textarea id="part" name="part" rows="3" required></textarea></div>
-<div><label for="shop">Nearest shop</label><select id="shop" name="shop"><option>Northwich</option><option>Winsford</option></select></div>
+<div class="row"><div><label for="fname">First name *</label><input id="fname" name="firstName" type="text" autocomplete="given-name" required></div>
+<div><label for="lname">Last name *</label><input id="lname" name="lastName" type="text" autocomplete="family-name" required></div></div>
+<div class="row"><div><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+<div><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div></div>
+<div class="row"><div><label for="reg">Vehicle registration *</label><input id="reg" name="registration" type="text" autocapitalize="characters" autocomplete="off" required></div>
+<div><label for="vehicle">Vehicle make and model (optional)</label><input id="vehicle" name="vehicle" type="text"></div></div>
+<div><label for="part">The parts you need *</label><textarea id="part" name="part" rows="3" required></textarea></div>
+<div><label for="shop">Nearest shop</label><select id="shop" name="shop"><option>Northwich</option><option>Winsford</option></select>
+<p class="note" style="margin:8px 0 0"><button type="button" class="linkbtn" data-locate>Use my location to choose the nearest shop</button></p>
+<p class="note locmsg" role="status" style="margin:4px 0 0"></p>
+<p class="note" style="margin:4px 0 0">Your location stays in your browser. We don't receive or store it.</p></div>
 <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
 <p class="note" style="margin:0">* Required. We only use your details to answer your enquiry. See our <a href="privacy.html">privacy notice</a>.</p>
 <div class="msg" role="status" tabindex="-1"></div>
@@ -81,8 +87,8 @@
 </main>
 <footer class="site">
 <div class="wrap cols">
-<div><img class="logo-f" src="images/fast-parts-logo.svg" alt="Fast Parts" width="300" height="76"><p>The right part, fast.</p></div>
-<div><h3>Northwich</h3><p>171 Witton Street (entrance on Albion Road)<br>Northwich, Cheshire CW9 5LP<br><a href="tel:01606330555"><b>01606 330 555</b></a></p></div>
+<div><div class="fbrand"><img class="logo-f" src="images/fast-parts-logo.svg" alt="Fast Parts" width="300" height="76"><p>The right part, fast.</p></div></div>
+<div><h3>Northwich</h3><p>171 Witton Street<br>(entrance on Albion Road)<br>Northwich, Cheshire CW9 5LP<br><a href="tel:01606330555"><b>01606 330 555</b></a></p></div>
 <div><h3>Winsford</h3><p>68 High Street<br>Winsford, Cheshire CW7 2AP<br><a href="tel:01606552385"><b>01606 552 385</b></a></p></div>
 <div><h3>Opening hours</h3><p>Mon to Fri 08:30 to 17:30<br>Sat 09:00 to 12:00<br>Closed Sundays and bank holidays</p></div>
 </div>
