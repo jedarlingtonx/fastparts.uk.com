@@ -13,3 +13,8 @@ Publish changes: `git add .`, `git commit -m "message"`, `git push`.
 
 ## Cookies and analytics (dormant)
 The site sets no cookies. `cookies.html`, the footer "Cookie settings" link and `js/consent.js` are in place so analytics can be added later. To switch on: set `ANALYTICS_ID` in `js/consent.js`, update `cookies.html` and `privacy.html`, and set GA retention to 14 months with Google signals off. The banner has equal Accept and Reject and loads nothing before consent.
+
+## Open items for Paul (removed from the pages, still to confirm)
+- Google reviewer permission to show names and text.
+- Credit account terms and the approval process (Trade page).
+- About us story, team names and photos.
