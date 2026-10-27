@@ -62,7 +62,7 @@
 (function () {
   if (!('IntersectionObserver' in window)) { return; }
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-  var sel = 'main .sec h2, main .sec .sub, main .sec .cards > .card, main .sec .steps > li, main .sec .formcard, main .sec .hours, main .sec .prose, main .band .wrap > *';
+  var sel = 'main .sec h2, main .sec .sub, main .sec .cards > .card, main .sec .steps > li, main .sec .formcard, main .sec .hours, main .sec .prose, main .sec .tile, main .band .wrap > *';
   var vh = window.innerHeight || document.documentElement.clientHeight;
   var els = Array.prototype.filter.call(document.querySelectorAll(sel), function (el) {
     return el.getBoundingClientRect().top > vh * 0.92;
