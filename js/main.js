@@ -56,3 +56,27 @@
     }, function () { out.textContent = 'We couldn\'t get your location, so please choose a shop.'; }, { timeout: 10000, maximumAge: 600000 });
   });
 })();
+
+// Subtle scroll reveal. Only elements below the fold are hidden, then fade up as they arrive.
+// Skipped entirely if the visitor prefers reduced motion or the browser lacks IntersectionObserver.
+(function () {
+  if (!('IntersectionObserver' in window)) { return; }
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+  var sel = 'main .sec h2, main .sec .sub, main .sec .cards > .card, main .sec .steps > li, main .sec .formcard, main .sec .hours, main .sec .prose, main .band .wrap > *';
+  var vh = window.innerHeight || document.documentElement.clientHeight;
+  var els = Array.prototype.filter.call(document.querySelectorAll(sel), function (el) {
+    return el.getBoundingClientRect().top > vh * 0.92;
+  });
+  if (!els.length) { return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+  els.forEach(function (el) {
+    var sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+    el.style.transitionDelay = Math.min(sib, 3) * 80 + 'ms';
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+})();
