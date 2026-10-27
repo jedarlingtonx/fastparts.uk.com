@@ -18,3 +18,11 @@ The site sets no cookies. `cookies.html`, the footer "Cookie settings" link and 
 - Google reviewer permission to show names and text.
 - Credit account terms and the approval process (Trade page).
 - About us story, team names and photos.
+
+## SEO after launch
+1. Remove the noindex robots tag (build setting) and swap robots.txt as described above.
+2. Search Console: add the https://www.fastparts.uk.com property, submit sitemap.xml, then use URL Inspection > Request indexing on the home page.
+3. Google Business Profile: one listing per shop (Northwich, Winsford), with the same name, address, phone and hours as the site. Link both to the website.
+4. Keep name, address and phone identical everywhere (Google, Facebook, Yell, Bing Places, Apple Business Connect).
+5. Ask happy customers for Google reviews; reply to them.
+6. Check at the Rich Results Test (search.google.com/test/rich-results) once live.
