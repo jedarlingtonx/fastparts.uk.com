@@ -207,3 +207,5 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
 @media (max-width:900px){.hero .pic{display:none}}
+
+.code404{font:italic 800 clamp(110px,22vw,200px)/.9 'Barlow Semi Condensed',sans-serif;color:var(--red);margin:0 0 8px;letter-spacing:-.01em}
