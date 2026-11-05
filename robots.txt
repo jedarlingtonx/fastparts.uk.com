@@ -1,3 +1,5 @@
-# Practice build: not for search engines yet. Replace with the launch version.
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /api/
+
+Sitemap: https://www.fastparts.uk.com/sitemap.xml
