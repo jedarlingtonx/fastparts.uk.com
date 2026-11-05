@@ -1,9 +1,34 @@
 {
   "name": "fastparts-uk-com",
+  "main": "worker/fastparts-worker.js",
   "compatibility_date": "2026-10-30",
   "assets": {
     "directory": "./",
-    "not_found_handling": "404-page"
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
   },
-  "previews": {}
+  "vars": { "SITE": "fastparts.uk.com", "CONSENT_RETENTION_MONTHS": "12" },
+  "triggers": { "crons": ["41 3 * * *"] },
+  "d1_databases": [
+    {
+      "binding": "CONSENT_DB",
+      "database_name": "Production",
+      "database_id": "d7050845-3ab4-44a0-bc2d-bf13ded1407a"
+    }
+  ],
+  "previews": {
+    "vars": { "SITE": "fastparts.uk.com" },
+    "d1_databases": [
+      {
+        "binding": "CONSENT_DB",
+        "database_name": "Staging",
+        "database_id": "2743134e-ddbb-4e2b-86ac-b676a70b0295"
+      }
+    ]
+  },
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "invocation_logs": false }
+  }
 }

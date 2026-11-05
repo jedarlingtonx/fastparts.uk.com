@@ -1,19 +1,56 @@
-// Fast Parts – cookie control (dormant until analytics is switched on).
-// To switch on: put a Google Analytics ID in ANALYTICS_ID, update the privacy notice and
-// cookies.html (they currently say no cookies are used), then tell Paul and re-check ICO guidance.
-// Rules: equal Accept and Reject buttons, nothing loads before consent, choice kept 12 months
-// in the essential cookie fp_consent, and "Cookie settings" in the footer reopens the choice.
+// Fast Parts – cookie control.
+// Google Analytics loads only after the visitor chooses "Accept analytics".
+// Rules: equal Accept and Reject buttons, nothing loads before consent, the choice is kept 12 months
+// in one essential cookie (fp_consent), and "Cookie settings" in the footer reopens the choice.
+// Every choice is also saved to a short audit record (see worker/consent-log.js).
 (function () {
+  'use strict';
   var ANALYTICS_ID = 'G-MLMZ8SBB66'; // Empty = no analytics, no banner, no cookies.
   var COOKIE = 'fp_consent';
+  var VERSION = 'v2';               // change this to ask everyone again after a policy change
+  var MAX_AGE = 60 * 60 * 24 * 365; // 12 months
+  var LOG_URL = '/api/consent';     // consent audit trail (worker/consent-log.js)
 
-  function read() {
+  // The cookie holds "<version>-<yes|no>.<consent id>", e.g. v2-yes.3f2b...
+  // The consent id is a random UUID. It links one visitor's choices together
+  // in the audit trail without identifying them.
+  function readState() {
     var m = document.cookie.match(new RegExp('(?:^|; )' + COOKIE + '=([^;]*)'));
-    return m ? m[1] : null;
+    var p = m && m[1].match(/^(v[0-9]+)-(yes|no)(?:\.([0-9a-f-]{36}))?$/);
+    return p ? { version: p[1], yes: p[2] === 'yes', id: p[3] || null } : null;
   }
-  function write(v) {
-    document.cookie = COOKIE + '=' + v + '; max-age=31536000; path=/; SameSite=Lax; Secure';
+  function readChoice() {
+    var s = readState();
+    if (!s || s.version !== VERSION) { return null; }
+    return s.yes;
   }
+  function newId() {
+    var c = window.crypto;
+    if (c && c.randomUUID) { return c.randomUUID(); }
+    var b = new Uint8Array(16), i;
+    if (c && c.getRandomValues) { c.getRandomValues(b); } else { for (i = 0; i < 16; i++) { b[i] = Math.floor(Math.random() * 256); } }
+    b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+    var h = Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+  }
+  function saveChoice(yes, id) {
+    document.cookie = COOKIE + '=' + VERSION + (yes ? '-yes' : '-no') + '.' + id +
+      '; max-age=' + MAX_AGE + '; path=/; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
+  }
+  // Sends one record to the audit trail. Never blocks or breaks the banner:
+  // if the request fails, the visitor's choice still applies.
+  function logChoice(action, yes, id) {
+    try {
+      fetch(LOG_URL, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: id, action: action, analytics: yes, version: VERSION, page: location.pathname }),
+        keepalive: true,
+        credentials: 'omit'
+      }).catch(function () {});
+    } catch (e) { /* ignore */ }
+  }
+
   function clearAnalytics() {
     var parts = location.hostname.split('.'), domains = [''];
     for (var k = 0; k < parts.length - 1; k++) { domains.push('; domain=' + parts.slice(k).join('.'), '; domain=.' + parts.slice(k).join('.')); }
@@ -45,6 +82,19 @@
     gtag('config', ANALYTICS_ID, { allow_google_signals: false, allow_ad_personalization_signals: false, cookie_expires: 34128000 });
   }
 
+  // choose(): save the choice, switch analytics on or off, and record it in the audit trail.
+  function choose(yes) {
+    var before = readChoice();       // null if no valid choice for this version yet
+    var state = readState();
+    var id = (state && state.id) || newId();
+    saveChoice(yes, id);
+    if (yes) { loadAnalytics(); } else { stopAnalytics(); }
+    if (before !== yes) {
+      logChoice(before === null ? (yes ? 'accept' : 'reject') : (yes ? 'changed' : 'withdrawn'), yes, id);
+    }
+    close();
+  }
+
   var box;
   function close() { if (box) { box.remove(); box = null; } }
   function open(first) {
@@ -64,9 +114,9 @@
     box.addEventListener('click', function (e) {
       var a = e.target.getAttribute && e.target.getAttribute('data-cc');
       if (!a) { return; }
-      if (a === 'accept') { write('accepted'); loadAnalytics(); }
-      if (a === 'reject') { write('rejected'); stopAnalytics(); }
-      close();
+      if (a === 'accept') { choose(true); }
+      else if (a === 'reject') { choose(false); }
+      else { close(); }
     });
     var f = box.querySelector('button'); if (f && !first) { f.focus(); }
   }
@@ -76,7 +126,7 @@
     if (t) { e.preventDefault(); open(false); }
   });
   if (ANALYTICS_ID) {
-    var c = read();
-    if (c === 'accepted') { loadAnalytics(); } else if (c === 'rejected') { clearAnalytics(); } else { open(true); }
+    var c = readChoice();
+    if (c === true) { loadAnalytics(); } else if (c === false) { clearAnalytics(); } else { clearAnalytics(); open(true); }
   }
 })();
