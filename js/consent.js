@@ -4,7 +4,7 @@
 // Rules: equal Accept and Reject buttons, nothing loads before consent, choice kept 12 months
 // in the essential cookie fp_consent, and "Cookie settings" in the footer reopens the choice.
 (function () {
-  var ANALYTICS_ID = '';            // e.g. 'G-XXXXXXXXXX'. Empty = no analytics, no banner, no cookies.
+  var ANALYTICS_ID = 'G-MLMZ8SBB66'; // Empty = no analytics, no banner, no cookies.
   var COOKIE = 'fp_consent';
 
   function read() {
@@ -29,7 +29,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { window.dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', ANALYTICS_ID, { anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false });
+    gtag('config', ANALYTICS_ID, { allow_google_signals: false, allow_ad_personalization_signals: false, cookie_expires: 34128000 });
   }
 
   var box;
@@ -43,7 +43,7 @@
       inner += '<p>This site does not currently use cookies, analytics or tracking, so there is nothing to switch on or off. If that changes we will ask you first. See our <a href="cookies.html">cookie policy</a>.</p>' +
                '<div class="cc-b"><button type="button" class="btn" data-cc="close">Close</button></div>';
     } else {
-      inner += '<p>We would like to use analytics cookies to see which pages are useful. They are off unless you accept. Strictly necessary cookie: <code>fp_consent</code> remembers your choice. See our <a href="cookies.html">cookie policy</a>.</p>' +
+      inner += '<p>We would like to use Google Analytics cookies to see which pages are useful. They are off unless you accept. Strictly necessary cookie: <code>fp_consent</code> remembers your choice. See our <a href="cookies.html">cookie policy</a>.</p>' +
                '<div class="cc-b"><button type="button" class="btn" data-cc="accept">Accept analytics</button><button type="button" class="btn" data-cc="reject">Reject analytics</button></div>';
     }
     box.innerHTML = inner + '</div>';
