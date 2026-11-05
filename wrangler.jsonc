@@ -18,7 +18,7 @@
     }
   ],
   "previews": {
-    "vars": { "SITE": "fastparts.uk.com" },
+    "vars": { "SITE": "fastparts.uk.com", "CONSENT_PREVIEW_WORKER": "fastparts-uk-com" },
     "d1_databases": [
       {
         "binding": "CONSENT_DB",

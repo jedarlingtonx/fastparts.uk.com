@@ -31,19 +31,28 @@ function siteOf(env) {
 }
 
 // Only pages on this site (the domain itself or any subdomain, such as www or staging).
-function originAllowed(request, site) {
+//
+// Preview builds run on a workers.dev address, not the site's domain. Setting
+// CONSENT_PREVIEW_WORKER (under "previews" only, never in production) to the
+// Worker's name also allows that Worker's own workers.dev addresses.
+function originAllowed(request, site, env) {
   const origin = request.headers.get("origin");
   if (!origin) return false;
   try {
     const host = new URL(origin).hostname;
-    return host === site || host.endsWith("." + site);
+    if (host === site || host.endsWith("." + site)) return true;
+    const w = env && env.CONSENT_PREVIEW_WORKER;
+    if (typeof w === "string" && /^[a-z0-9-]+$/.test(w)) {
+      return new RegExp("^([a-z0-9-]+-)?" + w + "\\.[a-z0-9-]+\\.workers\\.dev$").test(host);
+    }
+    return false;
   } catch (e) {
     return false;
   }
 }
 
 async function logChoice(request, env, site) {
-  if (!originAllowed(request, site)) return json({ error: "forbidden" }, 403);
+  if (!originAllowed(request, site, env)) return json({ error: "forbidden" }, 403);
 
   const text = await request.text();
   if (text.length > MAX_BODY) return json({ error: "too_long" }, 413);
