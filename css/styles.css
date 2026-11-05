@@ -246,3 +246,15 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
 .cc-opt{display:flex;gap:12px;align-items:flex-start;margin:0 0 12px;cursor:pointer}
 .cc-opt input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--navy);flex:0 0 auto}
 .cc-opt input:focus-visible,.cc a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+/* cookie table */
+.cktable{border-collapse:collapse;width:100%;font-size:16px}
+.cktable th,.cktable td{text-align:left;vertical-align:top;padding:10px 12px 10px 0;border-bottom:1px solid var(--line)}
+.cktable th{font-weight:600}
+@media (max-width:760px){
+.cktable thead{position:absolute;left:-9999px}
+.cktable,.cktable tbody,.cktable tr,.cktable td{display:block;width:100%}
+.cktable tr{border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin:0 0 14px;background:#fff}
+.cktable td{border:0;padding:4px 0}
+.cktable td::before{content:attr(data-label);display:block;font-weight:600;font-size:14px;color:var(--navy)}
+}
