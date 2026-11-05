@@ -132,9 +132,9 @@ footer.site .legal{border-top:1px solid #C9D3E6;display:flex;flex-wrap:wrap;gap:
 .prose h3{margin-top:24px}
 .todo{background:#FFF4CC;padding:0 4px;border-radius:3px}
 
-.credit{padding-bottom:32px}
-.credit a{display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:16px;text-decoration:none}
-.credit a:hover span{text-decoration:underline}
+.credit{padding-bottom:32px;display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:16px}
+.credit a{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.credit a:hover{text-decoration-thickness:2px}
 .credit .fac{flex:none}
 
 /* cookie control */
