@@ -1,7 +1,6 @@
 // Fast Parts – enquiry forms.
-// Each form carries data-endpoint="". Once a form service is chosen, paste its
-// endpoint URL into that attribute in the HTML (see README). Until then the form
-// tells people to ring instead of pretending to send.
+// Forms post JSON to Web3Forms (data-endpoint on each form; the access key is a hidden field).
+// If an endpoint is ever blank the form tells people to ring instead of pretending to send.
 (function () {
   var forms = document.querySelectorAll('form[data-form]');
   Array.prototype.forEach.call(forms, function (form) {
@@ -22,7 +21,8 @@
       new FormData(form).forEach(function (v, k) { if (k !== 'website') { data[k] = v; } });
       data.form = form.getAttribute('data-form');
       fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) })
-        .then(function (r) { if (!r.ok) { throw new Error('bad'); } form.reset(); show('ok', 'Thanks, we have your details and will be in touch.'); })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (res) { if (!r.ok || res.success === false) { throw new Error('bad'); } }); })
+        .then(function () { form.reset(); show('ok', 'Thanks, we have your details and will be in touch.'); })
         .catch(function () { show('err', 'Sorry, that did not send. Please ring Northwich on 01606 330 555 or Winsford on 01606 552 385.'); })
         .then(function () { btn.disabled = false; });
     });

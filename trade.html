@@ -73,7 +73,10 @@
 <h2>Open a trade credit account</h2>
 <p>Tell us a little about your business and we'll get in touch to complete your application.</p>
 </div>
-<form data-form="trade-credit-request" data-endpoint="" novalidate>
+<form data-form="trade-credit-request" data-endpoint="https://api.web3forms.com/submit" novalidate>
+<input type="hidden" name="access_key" value="8da22f6a-78a8-4df6-b4ce-ab7d0f6678fd">
+<input type="hidden" name="subject" value="New trade credit account request from the Fast Parts website">
+<input type="hidden" name="from_name" value="Fast Parts website">
 <div><label for="biz">Business name *</label><input id="biz" name="business" type="text" autocomplete="organization" required></div>
 <div class="row"><div><label for="cfname">First name *</label><input id="cfname" name="firstName" type="text" autocomplete="given-name" required></div>
 <div><label for="clname">Last name *</label><input id="clname" name="lastName" type="text" autocomplete="family-name" required></div></div>

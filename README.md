@@ -4,7 +4,7 @@ Static HTML/CSS/JS, no build step. Hosted on GitHub Pages.
 
 ## Before launch
 1. Fill every highlighted `[placeholder]` (search the HTML for `class="todo"`): company name, number, registered office, VAT, privacy email, response time, credit terms, 1989 heritage, reviewer permission.
-2. Forms: paste a form-service endpoint into `data-endpoint=""` on both forms (parts enquiry on index.html and retail.html, trade credit on trade.html). Until then forms tell visitors to ring.
+2. Forms: all three forms (parts enquiry on index.html and retail.html, trade credit on trade.html) post to Web3Forms. Each form has its own access key in a hidden field (`access_key`); enquiries and credit requests use different keys so they can be routed separately in the Web3Forms dashboard.
 3. Indexing: the site is currently `noindex` with `Disallow: /` in robots.txt. At launch remove the robots meta tag from each page and replace robots.txt with `User-agent: *` / `Allow: /` / `Sitemap: https://www.fastparts.uk.com/sitemap.xml`.
 4. Replace the recreated logo with Paul's original vector artwork if he has it, and the FP favicon once approved.
 5. Domain: point www.fastparts.uk.com at GitHub Pages (CNAME), fix the bare-domain redirect, then enforce HTTPS.
