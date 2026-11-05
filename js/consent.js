@@ -51,34 +51,14 @@
     } catch (e) { /* ignore */ }
   }
 
-  // Every domain a cookie could have been set on for this page: host-only, plus each parent domain with and without the leading dot.
-  function cookieDomains() {
+  function clearAnalytics() {
     var parts = location.hostname.split('.'), domains = [''];
     for (var k = 0; k < parts.length - 1; k++) { domains.push('; domain=' + parts.slice(k).join('.'), '; domain=.' + parts.slice(k).join('.')); }
-    return domains;
-  }
-  function clearAnalytics() {
-    var domains = cookieDomains();
     document.cookie.split('; ').forEach(function (c) {
       var n = c.split('=')[0];
       if (n === '_ga' || n.indexOf('_ga_') === 0 || n === '_gid' || n.indexOf('_gat') === 0) {
         domains.forEach(function (d) { document.cookie = n + '=; max-age=0; path=/' + d; });
       }
-    });
-  }
-  // Old-site clean-up. The previous Fast Parts website left its own cookies on this domain.
-  // This site only needs fp_consent, plus the Google Analytics cookies (kept or cleared by the
-  // analytics code above, depending on the choice) and Cloudflare's own security cookies.
-  // Every other cookie that JavaScript can see is expired, on this page's path and each parent path.
-  // Cookies marked HttpOnly can't be seen or removed from JavaScript.
-  var KEEP = /^(fp_consent|_ga|_ga_.*|_gid|_gat.*|__cf.*|cf_clearance)$/;
-  function clearLegacy() {
-    var domains = cookieDomains(), paths = ['/'], p = '';
-    location.pathname.split('/').filter(Boolean).forEach(function (seg) { p += '/' + seg; paths.push(p); });
-    document.cookie.split('; ').forEach(function (c) {
-      var n = c.split('=')[0];
-      if (!n || KEEP.test(n)) { return; }
-      domains.forEach(function (d) { paths.forEach(function (path) { document.cookie = n + '=; max-age=0; path=' + path + d; }); });
     });
   }
   function stopAnalytics() {
@@ -124,7 +104,6 @@
     var id = (state && state.id) || newId();
     saveChoice(yes, id);
     if (yes) { loadAnalytics(); } else { stopAnalytics(); }
-    clearLegacy();
     if (before !== yes) {
       logChoice(before === null ? (yes ? 'accept' : 'reject') : (yes ? 'changed' : 'withdrawn'), yes, id);
     }
@@ -136,7 +115,7 @@
     box.innerHTML =
       '<div class="cc-in">' +
       '<div data-view="main"><h2>Cookies on this site</h2>' +
-      '<p>We’d like to use Analytics cookies to see how you use this site. They stay off unless you say Accept. A cookie that remembers your choice is always on. <a href="cookies.html">Cookie policy</a></p>' +
+      '<p>We’d like to use Analytics cookies to see how you use this site. They stay off unless you say Accept. A cookie that remembers your choice is always on. <a href="/cookies">Cookie policy</a></p>' +
       '<div class="cc-b"><button type="button" class="btn" data-cc="accept">Accept analytics</button><button type="button" class="btn" data-cc="reject">Reject analytics</button><button type="button" class="btn ghost" data-cc="manage">Choose settings</button></div></div>' +
       '<div data-view="prefs" hidden><h2>Cookie settings</h2>' +
       '<label class="cc-opt"><input type="checkbox" checked disabled><span><strong>Essential</strong><br>Remembers your cookie choice. Always on.</span></label>' +
@@ -171,7 +150,6 @@
     var t = e.target.closest && e.target.closest('[data-cookie-settings]');
     if (t) { e.preventDefault(); openSettings(t); }
   });
-  clearLegacy(); // runs on every page, so old-site cookies go even before a choice is made
   if (ANALYTICS_ID) {
     var c = readChoice();
     if (c === true) { loadAnalytics(); } else if (c === false) { clearAnalytics(); } else { clearAnalytics(); openMain(); }
