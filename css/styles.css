@@ -238,3 +238,9 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
 .pull figcaption{font-size:16px;color:var(--ink)}
 .pull .stars{font-size:18px;margin-right:6px}
 @media (max-width:800px){.two{grid-template-columns:minmax(0,1fr);gap:24px}.about-est{padding-bottom:96px}.about-est .bignum{top:auto;bottom:-12px;transform:none}}
+
+/* cookie settings view */
+.cc[hidden],.cc [hidden]{display:none}
+.cc-opt{display:flex;gap:12px;align-items:flex-start;margin:0 0 14px;cursor:pointer;max-width:760px}
+.cc-opt input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--navy);flex:0 0 auto}
+.cc-opt input:focus-visible,.cc a:focus-visible{outline:3px solid var(--red);outline-offset:2px}
