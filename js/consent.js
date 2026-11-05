@@ -15,14 +15,27 @@
     document.cookie = COOKIE + '=' + v + '; max-age=31536000; path=/; SameSite=Lax; Secure';
   }
   function clearAnalytics() {
+    var parts = location.hostname.split('.'), domains = [''];
+    for (var k = 0; k < parts.length - 1; k++) { domains.push('; domain=' + parts.slice(k).join('.'), '; domain=.' + parts.slice(k).join('.')); }
     document.cookie.split('; ').forEach(function (c) {
       var n = c.split('=')[0];
-      if (n.indexOf('_ga') === 0) { document.cookie = n + '=; max-age=0; path=/; domain=.' + location.hostname.replace(/^www\./, ''); document.cookie = n + '=; max-age=0; path=/'; }
+      if (n === '_ga' || n.indexOf('_ga_') === 0 || n === '_gid' || n.indexOf('_gat') === 0) {
+        domains.forEach(function (d) { document.cookie = n + '=; max-age=0; path=/' + d; });
+      }
     });
+  }
+  function stopAnalytics() {
+    // Google's tag may still be running on this page and can write its cookies again, so switch it off and clear repeatedly.
+    window['ga-disable-' + ANALYTICS_ID] = true;
+    clearAnalytics();
+    setTimeout(clearAnalytics, 500);
+    setTimeout(clearAnalytics, 2500);
+    window.addEventListener('pagehide', clearAnalytics);
   }
   function loadAnalytics() {
     if (!ANALYTICS_ID || window.__fpGa) { return; }
     window.__fpGa = true;
+    window['ga-disable-' + ANALYTICS_ID] = false;
     var s = document.createElement('script');
     s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANALYTICS_ID;
     document.head.appendChild(s);
@@ -52,7 +65,7 @@
       var a = e.target.getAttribute && e.target.getAttribute('data-cc');
       if (!a) { return; }
       if (a === 'accept') { write('accepted'); loadAnalytics(); }
-      if (a === 'reject') { write('rejected'); clearAnalytics(); }
+      if (a === 'reject') { write('rejected'); stopAnalytics(); }
       close();
     });
     var f = box.querySelector('button'); if (f && !first) { f.focus(); }
@@ -64,6 +77,6 @@
   });
   if (ANALYTICS_ID) {
     var c = read();
-    if (c === 'accepted') { loadAnalytics(); } else if (c !== 'rejected') { open(true); }
+    if (c === 'accepted') { loadAnalytics(); } else if (c === 'rejected') { clearAnalytics(); } else { open(true); }
   }
 })();
