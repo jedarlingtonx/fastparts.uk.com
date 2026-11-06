@@ -1,5 +1,5 @@
 // Fast Parts – enquiry forms.
-// Forms post JSON to Web3Forms (data-endpoint on each form; the access key is a hidden field).
+// Forms post JSON to Web3Forms (data-endpoint on each form). The parts enquiry form picks its access key from data-keys by the chosen shop.
 // If an endpoint is ever blank the form tells people to ring instead of pretending to send.
 (function () {
   var forms = document.querySelectorAll('form[data-form]');
@@ -20,6 +20,17 @@
       var data = {};
       new FormData(form).forEach(function (v, k) { if (k !== 'website') { data[k] = v; } });
       data.form = form.getAttribute('data-form');
+      // One form, one Web3Forms key per shop: the chosen shop decides who receives the email.
+      var keyMap = form.getAttribute('data-keys');
+      if (keyMap) {
+        try { data.access_key = JSON.parse(keyMap)[data.shop]; } catch (err) { data.access_key = ''; }
+        data.subject = 'New parts enquiry (' + data.shop + ') from the Fast Parts website';
+        if (!data.access_key) {
+          show('err', 'Please choose a shop, or ring Northwich on 01606 330 555 or Winsford on 01606 552 385.');
+          btn.disabled = false;
+          return;
+        }
+      }
       fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (res) { if (!r.ok || res.success === false) { throw new Error('bad'); } }); })
         .then(function () { form.reset(); show('ok', 'Thanks, we have your details and will be in touch.'); })
