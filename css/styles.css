@@ -132,10 +132,10 @@ footer.site .legal{border-top:1px solid #C9D3E6;display:flex;flex-wrap:wrap;gap:
 .prose h3{margin-top:24px}
 .todo{background:#FFF4CC;padding:0 4px;border-radius:3px}
 
-.credit{padding-bottom:32px;display:flex;align-items:center;gap:8px;color:var(--navy);font-weight:600;font-size:16px}
-.credit a{color:var(--navy);text-decoration:underline;text-underline-offset:3px}
+.credit{padding-bottom:32px;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:16px;line-height:1.4}
+.credit a{color:var(--navy);text-decoration:underline;text-underline-offset:3px;font-weight:600}
 .credit a:hover{text-decoration-thickness:2px}
-.credit .fac{flex:none}
+.credit .fac{flex:none;width:30px;height:30px}
 
 /* cookie control */
 .cc{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));pointer-events:none;font-size:15px;line-height:1.5}
