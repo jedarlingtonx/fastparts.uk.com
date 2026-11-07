@@ -8,14 +8,25 @@
 // the time is set here on the server.
 //
 // Settings (wrangler.jsonc, and again under "previews" for staging):
-//   vars.SITE            the site's domain, e.g. "fastparts.uk.com" (required)
+//   vars.SITE            the site's domain, e.g. "pixel-north.co.uk" (required)
 //   CONSENT_DB           the D1 database binding (required)
 //   CONSENT_ADMIN_TOKEN  secret for the lookup endpoint (optional)
+//   CONSENT_RETENTION_MONTHS  how long records are kept (optional, default 12, see pruneConsent)
+//   Under "previews" only, to allow staging on a workers.dev address:
+//   CONSENT_PREVIEW_WORKER      the Worker's own name (optional)
+//   CONSENT_WORKERS_SUBDOMAIN   your workers.dev account name, e.g. "jedarlington" (optional but
+//                               recommended: stops another account's lookalike Worker matching)
+//
+// Kit cookie control 4.x also sends the list of categories switched on (analytics,
+// preferences, media, marketing). Run the migration at the bottom of schema.sql once
+// per database BEFORE deploying this version.
 
 const ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const ACTIONS = new Set(["accept", "reject", "changed", "withdrawn"]);
 const VERSION_RE = /^v[0-9]{1,3}$/;
 const SITE_RE = /^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$/;
+const CATEGORIES = ["analytics", "preferences", "media", "marketing"];
+const WORKER_RE = /^[a-z0-9][a-z0-9-]{0,62}$/;
 const MAX_BODY = 600; // bytes
 
 function json(data, status = 200) {
@@ -31,28 +42,29 @@ function siteOf(env) {
 }
 
 // Only pages on this site (the domain itself or any subdomain, such as www or staging).
-//
-// Preview builds run on a workers.dev address, not the site's domain. Setting
-// CONSENT_PREVIEW_WORKER (under "previews" only, never in production) to the
-// Worker's name also allows that Worker's own workers.dev addresses.
-function originAllowed(request, site, env) {
+// Previews only: also this Worker's own workers.dev addresses, when CONSENT_PREVIEW_WORKER is set,
+// i.e. <worker>.<account>.workers.dev and <anything>-<worker>.<account>.workers.dev (preview builds).
+function originAllowed(request, env, site) {
   const origin = request.headers.get("origin");
   if (!origin) return false;
-  try {
-    const host = new URL(origin).hostname;
-    if (host === site || host.endsWith("." + site)) return true;
-    const w = env && env.CONSENT_PREVIEW_WORKER;
-    if (typeof w === "string" && /^[a-z0-9-]+$/.test(w)) {
-      return new RegExp("^([a-z0-9-]+-)?" + w + "\\.[a-z0-9-]+\\.workers\\.dev$").test(host);
+  let host;
+  try { host = new URL(origin).hostname; } catch (e) { return false; }
+  if (host === site || host.endsWith("." + site)) return true;
+
+  const worker = env && env.CONSENT_PREVIEW_WORKER;
+  if (typeof worker === "string" && WORKER_RE.test(worker)) {
+    const labels = host.split(".");
+    if (labels.length === 4 && labels[2] === "workers" && labels[3] === "dev") {
+      const sub = env.CONSENT_WORKERS_SUBDOMAIN;
+      if (typeof sub === "string" && sub && labels[1] !== sub) return false;
+      return labels[0] === worker || labels[0].endsWith("-" + worker);
     }
-    return false;
-  } catch (e) {
-    return false;
   }
+  return false;
 }
 
 async function logChoice(request, env, site) {
-  if (!originAllowed(request, site, env)) return json({ error: "forbidden" }, 403);
+  if (!originAllowed(request, env, site)) return json({ error: "forbidden" }, 403);
 
   const text = await request.text();
   if (text.length > MAX_BODY) return json({ error: "too_long" }, 413);
@@ -67,10 +79,23 @@ async function logChoice(request, env, site) {
   if (typeof b.version !== "string" || !VERSION_RE.test(b.version)) return json({ error: "bad_request" }, 400);
   if (typeof b.analytics !== "boolean") return json({ error: "bad_request" }, 400);
 
+  // categories: the list of optional categories switched on (may be empty). Older
+  // banners do not send it, which is stored as NULL.
+  let categories = null;
+  if (b.categories !== undefined) {
+    const c = b.categories;
+    if (!Array.isArray(c) || c.length > CATEGORIES.length || new Set(c).size !== c.length ||
+        !c.every((x) => CATEGORIES.includes(x))) {
+      return json({ error: "bad_request" }, 400);
+    }
+    if (c.includes("analytics") !== b.analytics) return json({ error: "bad_request" }, 400);
+    categories = CATEGORIES.filter((x) => c.includes(x)).join(",");
+  }
+
   try {
     await env.CONSENT_DB
-      .prepare("INSERT INTO consent_log (site, consent_id, created_at, action, analytics, policy_version, page) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)")
-      .bind(site, id, new Date().toISOString(), b.action, b.analytics ? 1 : 0, b.version, page)
+      .prepare("INSERT INTO consent_log (site, consent_id, created_at, action, analytics, categories, policy_version, page) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)")
+      .bind(site, id, new Date().toISOString(), b.action, b.analytics ? 1 : 0, categories, b.version, page)
       .run();
   } catch (e) {
     console.error("consent log error:", String((e && e.message) || e).slice(0, 160));
@@ -87,7 +112,7 @@ async function lookup(request, env, site, id) {
   if (!token || auth !== "Bearer " + token) return json({ error: "forbidden" }, 403);
   if (!ID_RE.test(id)) return json({ error: "bad_request" }, 400);
   const rows = await env.CONSENT_DB
-    .prepare("SELECT created_at, action, analytics, policy_version, page FROM consent_log WHERE site = ?1 AND consent_id = ?2 ORDER BY created_at, rowid")
+    .prepare("SELECT created_at, action, analytics, categories, policy_version, page FROM consent_log WHERE site = ?1 AND consent_id = ?2 ORDER BY created_at, rowid")
     .bind(site, id)
     .all();
   return json({ site, consent_id: id, records: rows.results || [] });

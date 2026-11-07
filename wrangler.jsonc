@@ -18,7 +18,7 @@
     }
   ],
   "previews": {
-    "vars": { "SITE": "fastparts.uk.com", "CONSENT_PREVIEW_WORKER": "fastparts-uk-com" },
+    "vars": { "SITE": "fastparts.uk.com", "CONSENT_PREVIEW_WORKER": "fastparts-uk-com", "CONSENT_WORKERS_SUBDOMAIN": "jedarlington" },
     "d1_databases": [
       {
         "binding": "CONSENT_DB",
