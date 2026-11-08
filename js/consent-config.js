@@ -21,6 +21,11 @@ window.COOKIE_CONTROL = {
   // banner can see except the ones below and the ones the visitor has allowed.
   legacyCookies: ["*"],
   keepCookies: [],
+  text: {
+    intro: "We’d like to use analytics cookies to see how you use this site. By clicking \"Accept all\", you consent to our use of cookies. A cookie that remembers your choice is always on.",
+    accept: "Accept all",
+    reject: "Reject all"
+  },
   colors: { brand: "#031A78", text: "#1B2030", background: "#ffffff", focus: "#E1162C" },
   fonts: {
     body: "'Source Sans 3', Arial, sans-serif",
