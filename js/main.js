@@ -91,3 +91,20 @@
     io.observe(el);
   });
 })();
+
+// "Find a part" card: pass the registration to the enquiry form and move the visitor to it.
+(function () {
+  var f = document.querySelector('[data-finder]'); if (!f) { return; }
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = (f.querySelector('input').value || '').replace(/\s+/g, ' ').trim().toUpperCase();
+    var reg = document.getElementById('reg'), part = document.getElementById('part'), target = document.getElementById('enquiry');
+    if (reg && v) { reg.value = v; }
+    if (target) {
+      var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+    }
+    var go = (v && part) ? part : reg;
+    if (go) { setTimeout(function () { try { go.focus({ preventScroll: true }); } catch (err) { go.focus(); } }, 350); }
+  });
+})();
