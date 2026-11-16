@@ -92,19 +92,34 @@
   });
 })();
 
-// "Find a part" card: pass the registration to the enquiry form and move the visitor to it.
+// Open/closed status in the shop card. Mon to Fri 08:30-17:00, Sat 09:00-12:00, closed Sundays and bank holidays.
+// Bank holidays (England): keep this list topped up each year.
 (function () {
-  var f = document.querySelector('[data-finder]'); if (!f) { return; }
-  f.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var v = (f.querySelector('input').value || '').replace(/\s+/g, ' ').trim().toUpperCase();
-    var reg = document.getElementById('reg'), part = document.getElementById('part'), target = document.getElementById('enquiry');
-    if (reg && v) { reg.value = v; }
-    if (target) {
-      var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      target.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+  var el = document.querySelector('[data-open-status]'); if (!el) { return; }
+  var BH = ['2026-12-25', '2026-12-26', '2026-12-28', '2027-01-01', '2027-03-26', '2027-03-29', '2027-05-03', '2027-05-31', '2027-08-30', '2027-12-25', '2027-12-27', '2027-12-28'];
+  var HRS = { 1: [510, 1020], 2: [510, 1020], 3: [510, 1020], 4: [510, 1020], 5: [510, 1020], 6: [540, 720] }; // minutes
+  var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  function hm(m) { return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + (m % 60)).slice(-2); }
+  function pad(n) { return ('0' + n).slice(-2); }
+  function ymd(d) { return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+  function render() {
+    var p = {};
+    try {
+      new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = parseInt(x.value, 10); });
+    } catch (err) { return; }
+    var day = new Date(Date.UTC(p.year, p.month - 1, p.day)), mins = (p.hour % 24) * 60 + p.minute;
+    function hoursFor(d) { return BH.indexOf(ymd(d)) > -1 ? null : (HRS[d.getUTCDay()] || null); }
+    var t = hoursFor(day), txt, open = false;
+    if (t && mins >= t[0] && mins < t[1]) { open = true; txt = 'Open now, closes at ' + hm(t[1]); }
+    else {
+      var when = null, h = null, n = (t && mins < t[0]) ? 0 : 1;
+      for (; n < 9; n++) { var d = new Date(day.getTime() + n * 864e5); h = hoursFor(d); if (h) { when = n === 0 ? 'today' : (n === 1 ? 'tomorrow' : DAYS[d.getUTCDay()]); break; } }
+      txt = when ? 'Closed, opens ' + when + ' at ' + hm(h[0]) : 'Closed';
     }
-    var go = (v && part) ? part : reg;
-    if (go) { setTimeout(function () { try { go.focus({ preventScroll: true }); } catch (err) { go.focus(); } }, 350); }
-  });
+    el.querySelector('.hb-txt').textContent = txt;
+    el.className = 'hb-now' + (open ? ' open' : '');
+    el.hidden = false;
+  }
+  render(); setInterval(render, 60000);
 })();

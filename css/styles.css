@@ -255,15 +255,18 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
 /* Find a part card, proof strip, dark reviews band (staging, 16 Nov 2026) */
 .hero .wrap{padding-bottom:112px}
 .finder-wrap{position:relative;z-index:2;margin-top:-64px}
-.finder{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 24px;background:#fff;border:2px solid var(--navy);border-radius:18px;padding:24px 28px;box-shadow:0 10px 28px rgba(3,26,120,.18)}
-.finder-txt{flex:1 1 240px;min-width:0}
-.finder h2{font-size:30px;margin-bottom:4px}
-.finder p{margin:0;color:var(--muted)}
-.finder-in{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:6px}
-.finder label{font-weight:700;font-size:16px;color:var(--navy)}
-.plate{font-family:var(--head);font-weight:800;font-size:30px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:#111;background:#F7D117;border:2px solid #111;border-radius:8px;padding:0 14px;min-height:56px;width:100%;box-sizing:border-box}
-.plate::placeholder{color:#6b5b0a;opacity:.7}
-.finder .btn{flex:0 0 auto}
+.hoursbar{display:grid;grid-template-columns:1.05fr 1fr 1fr;background:#fff;border:2px solid var(--navy);border-radius:18px;box-shadow:0 10px 28px rgba(3,26,120,.18);overflow:hidden}
+.hoursbar>div{padding:26px 28px;min-width:0}
+.hoursbar>div+div{border-left:1px solid var(--line)}
+.hb-now{display:flex;align-items:flex-start;gap:10px;margin:0 0 10px;font-weight:700;font-size:20px;line-height:1.3;color:var(--ink)}
+.hb-now[hidden]{display:none}
+.hb-now .dot{flex:none;width:14px;height:14px;border-radius:50%;background:#8A93A6;margin-top:6px}
+.hb-now.open .dot{background:#1C8A3E}
+.hb-hours{margin:0;color:var(--muted);font-size:17px;line-height:1.5}
+.hb-shop h2{font-size:30px;margin-bottom:6px}
+.hb-shop p{margin:0 0 14px;color:var(--muted)}
+.hb-shop .btns{display:flex;flex-wrap:wrap;gap:10px}
+.hb-shop .btn{min-height:48px;padding:0 20px;font-size:17px}
 .proof{background:#fff;border-bottom:1px solid var(--line)}
 .proof ul{list-style:none;margin:0;padding:36px 0 32px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
 .proof li{display:flex;flex-direction:column;gap:2px}
@@ -280,10 +283,11 @@ select{appearance:none;-webkit-appearance:none;background:#fff url("data:image/s
   .hero .pic{display:block;order:-1;flex:1 1 100%}
   .hero .pic img{max-height:210px}
   .proof ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hoursbar{grid-template-columns:minmax(0,1fr)}
+  .hoursbar>div+div{border-left:0;border-top:1px solid var(--line)}
 }
 @media (max-width:560px){
-  .finder{padding:20px 18px}
-  .finder .btn{width:100%}
+  .hoursbar>div{padding:20px 18px}
   .proof ul{gap:22px 14px;padding:28px 0 26px}
   .proof b{font-size:21px}
   .proof span{font-size:16px}
